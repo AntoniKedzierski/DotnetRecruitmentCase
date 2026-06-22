@@ -1,0 +1,9 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Threading;
+global using Microsoft.EntityFrameworkCore;
+global using Newtonsoft.Json;
+global using InvoicesDatabase;
+global using InvoicesDatabase.Entities;

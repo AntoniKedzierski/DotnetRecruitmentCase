@@ -1,0 +1,197 @@
+<UserControl x:Class="InvoicesDesktop.Views.Dialogs.InvoiceEditorDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:vm="clr-namespace:InvoicesDesktop.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:InvoiceEditorViewModel}"
+             Width="760" MaxHeight="720">
+    <DockPanel Margin="24">
+        <TextBlock DockPanel.Dock="Top" Text="{Binding Title}"
+                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                   Margin="0,0,0,20" />
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+                    HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                    Content="Cancel"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+            <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                    Content="Save" Margin="8,0,0,0"
+                    IsEnabled="{Binding CanSave}"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                <Button.CommandParameter>
+                    <system:Boolean>True</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+        </StackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0"
+                              materialDesign:HintAssist.Hint="Contractor"
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              ItemsSource="{Binding Contractors}"
+                              DisplayMemberPath="Display"
+                              SelectedItem="{Binding SelectedContractor}" />
+                    <TextBox Grid.Column="2"
+                             materialDesign:HintAssist.Hint="Invoice number"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Text="{Binding InvoiceNumber, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+
+                <TextBox materialDesign:HintAssist.Hint="Description"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,0,16" />
+
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <DatePicker Grid.Column="0"
+                                materialDesign:HintAssist.Hint="Sale date"
+                                Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                SelectedDate="{Binding SaleDate}" />
+                    <DatePicker Grid.Column="2"
+                                materialDesign:HintAssist.Hint="Invoice date"
+                                Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                SelectedDate="{Binding InvoiceDate}" />
+                    <DatePicker Grid.Column="4"
+                                materialDesign:HintAssist.Hint="Due date"
+                                Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                SelectedDate="{Binding DueDate}" />
+                </Grid>
+
+                <Grid Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             materialDesign:HintAssist.Hint="VAT rate (e.g. 0.23)"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Text="{Binding VatRate, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Column="2"
+                             materialDesign:HintAssist.Hint="Currency"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Text="{Binding Currency, UpdateSourceTrigger=PropertyChanged}" />
+                    <CheckBox Grid.Column="4" Content="Paid"
+                              VerticalAlignment="Center"
+                              IsChecked="{Binding Paid}" />
+                </Grid>
+
+                <DockPanel Margin="0,12,0,8">
+                    <TextBlock DockPanel.Dock="Left" Text="Positions"
+                               VerticalAlignment="Center"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" />
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            Command="{Binding AddPositionCommand}"
+                            Padding="8,2" Height="32">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" />
+                            <TextBlock Text="Add position" Margin="6,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </DockPanel>
+
+                <materialDesign:Card UniformCornerRadius="8" Padding="0"
+                                     materialDesign:ElevationAssist.Elevation="Dp1">
+                    <DataGrid ItemsSource="{Binding Positions}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              materialDesign:DataGridAssist.CellPadding="10 6 10 6"
+                              materialDesign:DataGridAssist.ColumnHeaderPadding="10 8 10 8"
+                              Style="{StaticResource MaterialDesignDataGrid}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Item" Width="2*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding AvailableItems}"
+                                                  DisplayMemberPath="Name"
+                                                  SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                                                  Margin="0" BorderThickness="0"
+                                                  VerticalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Qty" Width="Auto"
+                                                Binding="{Binding Quantity, UpdateSourceTrigger=LostFocus}" />
+                            <DataGridTextColumn Header="Unit price" Width="Auto"
+                                                Binding="{Binding UnitPrice, UpdateSourceTrigger=LostFocus}" />
+                            <DataGridTextColumn Header="Discount" Width="Auto"
+                                                Binding="{Binding Discount, UpdateSourceTrigger=LostFocus}" />
+                            <DataGridTextColumn Header="Account" Width="*"
+                                                Binding="{Binding AccountNumber, UpdateSourceTrigger=LostFocus}" />
+                            <DataGridTextColumn Header="Description" Width="*"
+                                                Binding="{Binding Description, UpdateSourceTrigger=LostFocus}" />
+                            <DataGridTextColumn Header="Line net" Width="Auto" IsReadOnly="True"
+                                                Binding="{Binding LineNet, StringFormat=N2}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTemplateColumn Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource MaterialDesignIconButton}"
+                                                Height="32" Width="32" ToolTip="Remove"
+                                                Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"
+                                                Command="{Binding DataContext.RemovePositionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}">
+                                            <materialDesign:PackIcon Kind="Close" />
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </materialDesign:Card>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                    <StackPanel Margin="0,0,32,0" HorizontalAlignment="Right">
+                        <TextBlock Text="Net total" Opacity="0.6"
+                                   Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding NetValue, StringFormat=N2}"
+                                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                   HorizontalAlignment="Right" />
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Right">
+                        <TextBlock Text="Gross total" Opacity="0.6"
+                                   Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding GrossValue, StringFormat=N2}"
+                                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                   Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                   HorizontalAlignment="Right" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

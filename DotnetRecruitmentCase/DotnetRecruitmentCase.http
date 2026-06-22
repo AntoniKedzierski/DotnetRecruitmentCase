@@ -1,0 +1,6 @@
+@DotnetRecruitmentCase_HostAddress = http://localhost:5239
+
+GET {{DotnetRecruitmentCase_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

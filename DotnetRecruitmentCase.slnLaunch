@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Invoices Application",
+    "Projects": [
+      {
+        "Path": "DotnetRecruitmentCase\\InvoicesApi.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "InvoicesDesktop\\InvoicesDesktop.csproj",
+        "Action": "Start",
+        "DebugTarget": "InvoicesDesktop"
+      }
+    ]
+  }
+]

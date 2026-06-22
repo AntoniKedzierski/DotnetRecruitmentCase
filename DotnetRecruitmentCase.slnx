@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CommonObjects/CommonObjects.csproj" />
+  <Project Path="DotnetRecruitmentCase/InvoicesApi.csproj" />
+  <Project Path="InvoicesDatabase/InvoicesDatabase.csproj" />
+  <Project Path="InvoicesDesktop/InvoicesDesktop.csproj" />
+</Solution>
