@@ -1,13 +1,13 @@
 using AutoMapper;
 using CommonObjects.Invoices;
-using DotnetRecruitmentCase.Mappers;
-using DotnetRecruitmentCase.Requests;
+using InvoicesApi.Mappers;
+using InvoicesApi.Requests;
 using InvoicesDatabase;
 using InvoicesDatabase.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace DotnetRecruitmentCase.Controllers;
+namespace InvoicesApi.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]

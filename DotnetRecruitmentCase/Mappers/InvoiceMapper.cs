@@ -2,7 +2,7 @@ using AutoMapper;
 using CommonObjects;
 using InvoicesDatabase;
 
-namespace DotnetRecruitmentCase.Mappers;
+namespace InvoicesApi.Mappers;
 
 public static class InvoiceMapper {
 

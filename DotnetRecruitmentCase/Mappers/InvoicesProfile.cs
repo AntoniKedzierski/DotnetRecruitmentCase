@@ -2,7 +2,7 @@ using AutoMapper;
 using CommonObjects.Invoices;
 using InvoicesDatabase.Entities;
 
-namespace DotnetRecruitmentCase.Mappers;
+namespace InvoicesApi.Mappers;
 
 public class InvoicesProfile : Profile {
 

@@ -1,13 +1,13 @@
 using AutoMapper;
 using CommonObjects.Invoices;
-using DotnetRecruitmentCase.Mappers;
-using DotnetRecruitmentCase.Requests;
+using InvoicesApi.Mappers;
+using InvoicesApi.Requests;
 using InvoicesDatabase;
 using InvoicesDatabase.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace DotnetRecruitmentCase.Controllers;
+namespace InvoicesApi.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -31,6 +31,7 @@ public class InvoicesController(InvoicesDbContext db, IMapper mapper) : Controll
             .Include(i => i.Contractor)
             .Include(i => i.Positions).ThenInclude(p => p.Item)
             .FirstOrDefaultAsync(i => i.Id == id);
+
         if (invoice is null) {
             return NotFound();
         }

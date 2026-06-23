@@ -1,5 +1,5 @@
 using AutoMapper;
-using DotnetRecruitmentCase.Mappers;
+using InvoicesApi.Mappers;
 using InvoicesDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;

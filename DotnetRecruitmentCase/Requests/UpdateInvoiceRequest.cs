@@ -1,4 +1,4 @@
-namespace DotnetRecruitmentCase.Requests;
+namespace InvoicesApi.Requests;
 
 public class UpdateInvoiceRequest {
 
