@@ -114,8 +114,6 @@ public class InvoicesController(InvoicesDbContext db, IMapper mapper) : Controll
 
         await _db.SaveChangesAsync();
 
-        // Celowo błędne: równoległe operacje async na tym samym DbContext.
-        // EF Core DbContext nie jest thread-safe.
         var contractorLoadTask = _db.Entry(invoice)
             .Reference(i => i.Contractor)
             .LoadAsync();
