@@ -22,13 +22,12 @@ public partial class Program {
 
         builder.Services.AddDbContext<InvoicesDbContext>(opt => opt.UseInMemoryDatabase("InvoicesDb"));
 
-        builder.Services.AddSingleton<IMapper>(
-            new MapperConfiguration(
-                cfg => cfg.AddProfile<InvoicesProfile>(),
-                NullLoggerFactory.Instance
-            )
-            .CreateMapper()
-        );
+        var mapper = new MapperConfiguration(
+            cfg => cfg.AddProfile<InvoicesProfile>(),
+            NullLoggerFactory.Instance
+        ).CreateMapper();
+
+        builder.Services.AddSingleton(mapper);
 
         var app = builder.Build();
 
