@@ -82,6 +82,7 @@ public class InvoicesController(InvoicesDbContext db, IMapper mapper) : Controll
             .Include(i => i.Contractor)
             .Include(i => i.Positions).ThenInclude(p => p.Item)
             .FirstOrDefaultAsync(i => i.Id == id);
+
         if (invoice is null) {
             return NotFound();
         }
@@ -89,34 +90,42 @@ public class InvoicesController(InvoicesDbContext db, IMapper mapper) : Controll
         _db.InvoicePositions.RemoveRange(invoice.Positions);
 
         var positions = request.Positions.Select(p => new InvoicePosition {
-            Id            = Guid.NewGuid(),
-            InvoiceId     = id,
-            ItemId        = p.ItemId,
-            Quantity      = p.Quantity,
-            UnitPrice     = p.UnitPrice,
-            Discount      = p.Discount,
+            Id = Guid.NewGuid(),
+            InvoiceId = id,
+            ItemId = p.ItemId,
+            Quantity = p.Quantity,
+            UnitPrice = p.UnitPrice,
+            Discount = p.Discount,
             AccountNumber = p.AccountNumber,
-            Description   = p.Description
+            Description = p.Description
         }).ToList();
 
-        invoice.ContractorId  = request.ContractorId;
+        invoice.ContractorId = request.ContractorId;
         invoice.InvoiceNumber = request.InvoiceNumber;
-        invoice.Description   = request.Description;
-        invoice.SaleDate      = request.SaleDate;
-        invoice.InvoiceDate   = request.InvoiceDate;
-        invoice.DueDate       = request.DueDate;
-        invoice.VatRate       = request.VatRate;
-        invoice.Currency      = request.Currency;
-        invoice.Paid          = request.Paid;
-        invoice.NetValue      = ComputeNetValue(positions);
-        invoice.Positions     = positions;
+        invoice.Description = request.Description;
+        invoice.SaleDate = request.SaleDate;
+        invoice.InvoiceDate = request.InvoiceDate;
+        invoice.DueDate = request.DueDate;
+        invoice.VatRate = request.VatRate;
+        invoice.Currency = request.Currency;
+        invoice.Paid = request.Paid;
+        invoice.NetValue = ComputeNetValue(positions);
+        invoice.Positions = positions;
 
         await _db.SaveChangesAsync();
 
-        await _db.Entry(invoice).Reference(i => i.Contractor).LoadAsync();
-        foreach (var pos in invoice.Positions) {
-            await _db.Entry(pos).Reference(p => p.Item).LoadAsync();
-        }
+        // Celowo błędne: równoległe operacje async na tym samym DbContext.
+        // EF Core DbContext nie jest thread-safe.
+        var contractorLoadTask = _db.Entry(invoice)
+            .Reference(i => i.Contractor)
+            .LoadAsync();
+
+        var itemLoadTasks = invoice.Positions
+            .Select(pos => _db.Entry(pos)
+                .Reference(p => p.Item)
+                .LoadAsync());
+
+        await Task.WhenAll(itemLoadTasks.Append(contractorLoadTask));
 
         return invoice.ToDto<InvoiceDto>(_mapper);
     }
