@@ -115,16 +115,10 @@ public class InvoicesController(InvoicesDbContext db, IMapper mapper) : Controll
 
         await _db.SaveChangesAsync();
 
-        var contractorLoadTask = _db.Entry(invoice)
-            .Reference(i => i.Contractor)
-            .LoadAsync();
-
-        var itemLoadTasks = invoice.Positions
-            .Select(pos => _db.Entry(pos)
-                .Reference(p => p.Item)
-                .LoadAsync());
-
-        await Task.WhenAll(itemLoadTasks.Append(contractorLoadTask));
+        await _db.Entry(invoice).Reference(i => i.Contractor).LoadAsync();
+        foreach (var pos in invoice.Positions) {
+            await _db.Entry(pos).Reference(p => p.Item).LoadAsync();
+        }
 
         return invoice.ToDto<InvoiceDto>(_mapper);
     }
